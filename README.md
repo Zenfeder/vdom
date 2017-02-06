@@ -1,4 +1,4 @@
-# 深入学习js
+# 轮子之virtual-dom
 ## 用法
 * 安装nodejs
 * 安装依赖包：npm install
