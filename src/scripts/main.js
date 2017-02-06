@@ -14,7 +14,7 @@ if (ENV !== 'production') {
 
 const vdom_a = createVdomNode('ul', { 'className': 'list'}, 
 	createVdomNode('li', {'className': 'active', 'style': 'color: green;'}, 'Facebook'),
-	createVdomNode('li', {}, 'Uber'),
+	createVdomNode('li', {'onClick': 'function(){alert(1)}'}, 'Uber'),
 	createVdomNode('li', {}, 'Google'),
 );
 
@@ -34,5 +34,3 @@ updateRdom($root, vdom_a);
 $reload.addEventListener('click', () => {
   updateRdom($root, vdom_b, vdom_a);
 });
-
-log("hello");

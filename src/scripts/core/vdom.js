@@ -6,12 +6,11 @@ if (ENV !== 'production') {
 } else {
 	debug.disable();
 }
-// 将HTML字符串格式解析成virtual DOM树
-function htmlStringParser (htmlString) {
-	const VdomTree = htmlString;
-	
-	return VdomTree;
-}
+
+/**
+ *  Part I: 描述与更新DOM
+ */
+
 // 创建Virtual DOM节点
 function createVdomNode (nodeType, props = {}, ...children) {
 	return { nodeType, props, children};
@@ -26,6 +25,7 @@ function createRdomTree (node) {
 	const $elem = document.createElement(node.nodeType);
 
 	setRdomAttrs($elem, node.props);
+	addEventListeners($elem, node.props);
 
 	node.children.map((childNode) => {
 		$elem.appendChild(createRdomTree(childNode));
@@ -48,7 +48,7 @@ function updateRdom ($parent, newNode, oldNode, index = 0) {
 		let newLength = newNode.children.length,
 			oldLength = oldNode.children.length;
 
-		for (let i = 0; i < newLength || i < oldLength; i++) {
+		for (let i = 0; i  < newLength || i < oldLength; i++) {
 			updateRdom(
 				$parent.childNodes[index], 
 				newNode.children[i], 
@@ -64,12 +64,16 @@ function updateRdom ($parent, newNode, oldNode, index = 0) {
 		);
 	}
 }
+
 function hasChanged (node1, node2) {
 	return (typeof node1 !== typeof node2) || 
 		(typeof node1 === 'string' && node1 !== node2) ||
 		(node1.nodeType !== node2.nodeType);
 }
 
+/**
+ * Part II: 属性(Attribute)
+ */
 function setRdomAttr ($elem, attrName, attrVal) {
 	if (isCustomAttr(attrName)) {
 		return;
@@ -82,9 +86,9 @@ function setRdomAttr ($elem, attrName, attrVal) {
 	}
 }
 
-function setRdomAttrs ($elem, attrs) {
-	Object.keys(attrs).forEach((attrName) => {
-		setRdomAttr($elem, attrName, attrs[attrName]);
+function setRdomAttrs ($elem, props) {
+	Object.keys(props).forEach((name) => {
+		setRdomAttr($elem, name, props[name]);
 	});
 }
 
@@ -96,8 +100,9 @@ function setBooleanAttr ($elem, attrName, attrVal) {
     $elem[attrName] = false;
   }
 }
+
 function isCustomAttr (attrName) {
-	return false;
+	return isEventAttr(attrName);
 }
 
 function removeBooleanAttr ($elem, attrName) {
@@ -132,5 +137,28 @@ function updateAttrs ($elem, newAttrs, oldAttrs = {}) {
 		updateAttr($elem, name, newAttrs[name], oldAttrs[name]);
 	});
 }
+
+/**
+ * Part III: 事件(Event)
+ */
+
+// 检测属性名是否为事件监听器
+function isEventAttr(name) {
+	return /^on/.test(name);
+}
+
+// 提取事件名称
+function extractEventName(name) {
+	return name.slice(2).toLowerCase();
+}
+
+function addEventListeners($target, props) {
+	Object.keys(props).forEach(name => {
+		if (isEventAttr(name)) {
+			$target.addEventListener(extractEventName(name), props[name]);
+		}
+	});
+}
+
 
 export {createVdomNode, createRdomTree, updateRdom};
