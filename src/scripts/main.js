@@ -34,3 +34,5 @@ updateRdom($root, vdom_a);
 $reload.addEventListener('click', () => {
   updateRdom($root, vdom_b, vdom_a);
 });
+
+log("hello");
