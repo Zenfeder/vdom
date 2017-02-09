@@ -1,7 +1,7 @@
 {
-  "name": "deepLearn-js",
+  "name": "virtual-dom",
   "version": "1.0.0",
-  "description": "deepLearn-js",
+  "description": "virtual-dom",
   "main": "rollup.config.js",
   "scripts": {
     "dev": "NODE_ENV=dev rollup -c -w",
